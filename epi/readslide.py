@@ -44,11 +44,11 @@ def getThumbByMag(osh,target_mag=10,base_mag=20,speed=False):
 def ndpiAdaptor(imgtype,imgdir,fname,file_ext,classes,mags,totals):
 	fullname = imgdir+'/'+os.path.basename(fname).replace("_mask.png",file_ext)
 	if(imgtype=="img"): #if we're looking at an img, it must be 3 channel, but cv2 won't load it in the correct channel order, so we need to fix that
-		print("imgMode:"+fullname)
+		#print("imgMode:"+fullname)
 		osh = OpenSlide(fullname)
 		io= getThumbByMag(osh,mags[0],mags[1])
 	else: #if its a mask image, then we only need a single channel (since grayscale 3D images are equal in all channels)
-		print("maskMode:"+fname)
+		#print("maskMode:"+fname)
 		#io=cv2.imread(fname)[:,:,0]# multiclass mask
 		io = plt.imread(fname)# if use plt -> single channel img will not have the 3rd axis.[:,:,0]
 		for i,key in enumerate(classes): #sum the number of pixels, this is done pre-resize, the but proportions don't change which is really what we're after
@@ -56,15 +56,17 @@ def ndpiAdaptor(imgtype,imgdir,fname,file_ext,classes,mags,totals):
 	return io
 	
 #simplify the args by composite types
+#return 3channel img for both mask and img ->simplify the case of shape and size for padding and patch extraction
 def pngAdaptor(imgtype,imgdir,fname,file_ext,classes,mags,totals):
 	fullname = imgdir+'/'+os.path.basename(fname).replace("_mask.png",file_ext)
 	if(imgtype=="img"): #if we're looking at an img, it must be 3 channel, but cv2 won't load it in the correct channel order, so we need to fix that
 		#print("imgMode:"+fullname)
 		io = plt.imread(fullname)
 	else: #if its a mask image, then we only need a single channel (since grayscale 3D images are equal in all channels)
-		print("maskMode:"+fname)
-		#io=cv2.imread(fname)[:,:,0]# multiclass mask
-		io = (plt.imread(fname)*255).astype(np.uint8)# if use plt -> single channel img will not have the 3rd axis.[:,:,0]
+		#print("maskMode:"+fname)
+		#io = (plt.imread(fname)*255).astype(np.uint8)# if use plt -> single channel img will not have the 3rd axis.[:,:,0]
+		io = cv2.imread(fname)
 		for i,key in enumerate(classes): #sum the number of pixels, this is done pre-resize, the but proportions don't change which is really what we're after
-			totals[1,i]+=sum(sum(io==key))
+		#those semantic coupling is freakingly crazy
+			totals[1,i]+=sum(sum(io[:,:,0]==key))
 	return io	

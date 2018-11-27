@@ -59,7 +59,7 @@ def ndpiAdaptor(imgtype,imgdir,fname,file_ext,classes,mags,totals):
 def pngAdaptor(imgtype,imgdir,fname,file_ext,classes,mags,totals):
 	fullname = imgdir+'/'+os.path.basename(fname).replace("_mask.png",file_ext)
 	if(imgtype=="img"): #if we're looking at an img, it must be 3 channel, but cv2 won't load it in the correct channel order, so we need to fix that
-		print("imgMode:"+fullname)
+		#print("imgMode:"+fullname)
 		io = plt.imread(fullname)
 	else: #if its a mask image, then we only need a single channel (since grayscale 3D images are equal in all channels)
 		print("maskMode:"+fname)

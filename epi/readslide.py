@@ -43,8 +43,8 @@ def getThumbByMag(osh,target_mag=10,base_mag=20,speed=False):
 
 
 def defaultLabelMap(io):
-	#0 1 2 3 --> -1 0 1 2
-	io = io - 1;
+	#0 1 2 3 
+	
 	return io
 #nameparser - return dict of func
 def defaultNameParser(fname,params):
